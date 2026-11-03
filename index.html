@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="author" content="HAE">
+  <meta name="theme-color" content="#ff6b4a">
+  <title>찰칵리뷰</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="찰칵리뷰">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-in">
+      <div class="brand">
+        <span class="shutter" aria-hidden="true"><i></i></span>
+        <h1>찰칵리뷰</h1>
+      </div>
+      <button class="icon-btn" id="openSettings" aria-label="설정">⚙️</button>
+    </div>
+    <p class="hero-copy">사진 한 장이면 끝.<br><b>배민·쿠팡이츠·네이버</b> 글자수에 딱 맞춰 써드려요</p>
+    <div class="hero-chips"><span>📸 사진 분석</span><span>📏 글자수 맞춤</span><span>✍️ 수정 반영</span></div>
+  </header>
+
+  <main class="wrap">
+    <!-- 1. 사진 -->
+    <section class="card">
+      <div class="card-head"><span class="step">01</span><h2>사진 올리기</h2><span class="hint" id="photoCount">0 / 5장</span></div>
+      <label class="drop" id="drop">
+        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+        <span class="vf tl"></span><span class="vf tr"></span><span class="vf bl"></span><span class="vf br"></span>
+        <span class="drop-icon">📷</span>
+        <span class="drop-text">눌러서 사진 선택 (최대 5장)</span>
+        <span class="drop-sub">음식·매장·상품 사진 모두 OK</span>
+      </label>
+      <div class="thumbs" id="thumbs"></div>
+    </section>
+
+    <!-- 2. 플랫폼 -->
+    <section class="card">
+      <div class="card-head"><span class="step">02</span><h2>어디에 올릴 리뷰?</h2></div>
+      <div class="platforms" id="platforms"></div>
+      <div class="length-box">
+        <div class="length-top">
+          <span>목표 글자수</span>
+          <strong><span id="targetLen">0</span>자</strong>
+        </div>
+        <input type="range" id="lenRange" min="10" max="500" step="10">
+        <div class="length-bottom">
+          <span id="lenMin">최소</span>
+          <span id="lenNote" class="len-note"></span>
+          <span id="lenMax">최대</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 옵션 -->
+    <section class="card">
+      <div class="card-head"><span class="step">03</span><h2>내 느낌 알려주기</h2><span class="hint">선택</span></div>
+
+      <div class="field">
+        <span class="label">별점</span>
+        <div class="stars" id="stars"></div>
+      </div>
+
+      <div class="field">
+        <span class="label">말투</span>
+        <div class="seg" id="tone">
+          <button data-v="친근" class="on">친근</button>
+          <button data-v="담백">담백</button>
+          <button data-v="꼼꼼">꼼꼼</button>
+          <button data-v="발랄">발랄</button>
+        </div>
+      </div>
+
+      <div class="field row2">
+        <label class="input"><span class="label">가게/상품 이름</span><input id="placeName" placeholder="예) 춘천 닭갈비집"></label>
+        <label class="input"><span class="label">메뉴/옵션</span><input id="menuName" placeholder="예) 치즈닭갈비 2인"></label>
+      </div>
+
+      <label class="input field"><span class="label">좋았던 점 · 아쉬운 점 (한 줄이면 충분)</span>
+        <textarea id="memo" rows="2" placeholder="예) 양 많고 배달 빨랐음, 조금 짰어요"></textarea>
+      </label>
+
+      <div class="field">
+        <span class="label">재방문·재구매</span>
+        <div class="seg seg3" id="closing">
+          <button data-v="yes" class="on">또 갈래요</button>
+          <button data-v="soft">티 안 나게</button>
+          <button data-v="none">언급 안 함</button>
+        </div>
+        <p class="seg-note" id="closingNote">마지막에 또 주문·방문하고 싶다는 한마디를 넣어요</p>
+      </div>
+
+      <div class="toggles one">
+        <label class="tg"><input type="checkbox" id="optEmoji" checked><span>이모지 넣기</span></label>
+      </div>
+    </section>
+
+    <div class="cta-wrap"><button class="cta" id="genBtn">✨ 리뷰 써주세요</button></div>
+
+    <!-- 결과 -->
+    <section class="card result hidden" id="resultCard">
+      <div class="card-head"><span class="step ok">✓</span><h2 id="resultTitle">완성된 리뷰</h2></div>
+      <div class="paper"><textarea id="output" class="output" rows="8"></textarea></div>
+      <div class="count-bar">
+        <span class="badge" id="countBadge">0자</span>
+        <span class="count-sub" id="countSub"></span>
+      </div>
+      <div class="revise" id="reviseBox">
+        <p class="revise-tip" id="reviseTip">✏️ 위 글을 직접 고치거나, 바꾸고 싶은 점을 적고 눌러 보세요</p>
+        <input id="reviseReq" class="revise-input" placeholder="예) 맵다는 말 빼고, 양 많다는 칭찬 더 넣어줘">
+        <div class="revise-row">
+          <button class="btn" id="undoBtn" disabled>↩️ 이전</button>
+          <button class="btn accent" id="reviseBtn">✍️ 내 수정대로 다시 쓰기</button>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="copyBtn">📋 복사</button>
+        <button class="btn" id="againBtn">🔄 다른 버전</button>
+        <button class="btn" id="fitBtn">✂️ 길이맞춤</button>
+      </div>
+    </section>
+
+    <!-- 기록 -->
+    <section class="card">
+      <div class="card-head"><span class="step soft">🕘</span><h2>최근 쓴 리뷰</h2><button class="link" id="clearHist">전체 삭제</button></div>
+      <div id="history" class="history"><p class="empty">아직 없어요</p></div>
+    </section>
+
+    <footer class="foot">찰칵리뷰 · made by HAE</footer>
+  </main>
+
+  <!-- 설정 -->
+  <div class="modal hidden" id="settings">
+    <div class="sheet">
+      <div class="sheet-head"><h2>설정</h2><button class="icon-btn" id="closeSettings" aria-label="닫기">✕</button></div>
+
+      <label class="input field"><span class="label">Gemini API 키</span>
+        <input id="apiKey" type="password" placeholder="비워 두면 앱 기본 설정 사용" autocomplete="off">
+      </label>
+      <p class="help">앱에 기본 키가 들어 있으면 비워 둬도 돼요. 내 키를 넣으면 이 기기 브라우저에만 저장돼요. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>에서 무료로 발급 → 복사해서 붙여넣기.</p>
+
+      <label class="input field"><span class="label">AI 모델</span>
+        <select id="model">
+          <option value="gemini-2.5-flash">gemini-2.5-flash (추천·무료)</option>
+          <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (더 빠름)</option>
+          <option value="gemini-3-flash-preview">gemini-3-flash-preview (최신)</option>
+          <option value="gemini-2.5-pro">gemini-2.5-pro (고품질·한도 적음)</option>
+        </select>
+      </label>
+
+      <div class="field">
+        <span class="label">플랫폼별 글자수 (직접 수정 가능)</span>
+        <p class="help">앱마다 정책이 바뀔 수 있어서, 실제 입력창 기준과 다르면 여기서 고쳐 주세요.</p>
+        <div class="limit-table" id="limitTable"></div>
+        <button class="link" id="resetLimits">기본값으로 되돌리기</button>
+      </div>
+
+      <button class="cta" id="saveSettings">저장</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="platforms.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
